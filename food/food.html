@@ -1,0 +1,2683 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodHub - Premium Food Delivery</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF4B2B;
+            --secondary-color: #FF416C;
+        }
+        
+        .bg-custom-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .btn-custom-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+        }
+        
+        .btn-custom-primary:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .rating {
+            color: #FFD700;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            padding: 120px 0;
+            overflow: hidden;
+            opacity: 0; /* Start hidden */
+        }
+
+        .hero-video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 1;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .delivery-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 2;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .testimonial-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Footer Styles */
+        .hover-text-primary:hover {
+            color: #FF4B2B;
+        }
+
+        :root[data-bs-theme="light"] {
+            --text-primary: #2d3436;
+            --text-secondary: #4a5568;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border-color: rgba(0, 0, 0, 0.12);
+            --card-bg: #ffffff;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --hover-bg: #f1f3f5;
+            --modal-backdrop: rgba(0, 0, 0, 0.5);
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        :root[data-bs-theme="dark"] {
+            --text-primary: #f5f6fa;
+            --text-secondary: #a4b0be;
+            --bg-primary: #1e2124;
+            --bg-secondary: #2f3136;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: #2f3136;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --hover-bg: #40444b;
+            --modal-backdrop: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Theme-aware styles */
+        body {
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            transition: background-color 0.3s ease, color 0.3s ease, 
+                        border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .navbar {
+            background-color: var(--bg-primary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow), 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-backdrop.show {
+            background-color: var(--modal-backdrop);
+        }
+
+        .delivery-info {
+            background-color: var(--bg-secondary);
+        }
+
+        .testimonial-card {
+            background-color: var(--bg-secondary);
+        }
+
+        footer {
+            background-color: var(--bg-secondary) !important;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Update existing toast styles */
+        .toast {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .toast-header {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-content {
+            border-radius: 15px;
+        }
+
+        .modal-body form .form-control {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .modal-body form .form-control:focus {
+            background-color: var(--bg-secondary);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(255, 75, 43, 0.25);
+        }
+
+        /* Add smooth scrolling to the whole page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Add parallax effect to delivery info section */
+        .delivery-info {
+            position: relative;
+            z-index: 2;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        .hero-title, .hero-text, .hero-buttons {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero-video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 1;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transform-origin: 0 50%;
+            transform: scaleX(0);
+            z-index: 1000;
+        }
+
+        .nav-scrolled {
+            background-color: var(--bg-primary) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-reveal {
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                height: auto;
+                min-height: 100vh;
+            }
+        }
+
+        /* Add these styles in the existing <style> tag */
+        .navbar {
+            transition: all 0.3s ease;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-scrolled {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar .nav-link:hover::after,
+        .navbar .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* Add responsive padding to account for fixed navbar */
+        body {
+            padding-top: 56px; /* Height of navbar */
+        }
+
+        @media (min-width: 992px) {
+            body {
+                padding-top: 76px; /* Larger padding for bigger navbar on desktop */
+            }
+        }
+
+        /* Update hero section to account for fixed navbar */
+        .hero-section {
+            margin-top: -56px; /* Negative margin to counteract body padding */
+        }
+
+        @media (min-width: 992px) {
+            .hero-section {
+                margin-top: -76px;
+            }
+        }
+
+        /* Update light mode styles for better text visibility */
+        :root[data-bs-theme="light"] {
+            --text-primary: #2d3436;
+            --text-secondary: #4a5568;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border-color: rgba(0, 0, 0, 0.12);
+            --card-bg: #ffffff;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --hover-bg: #f1f3f5;
+            --modal-backdrop: rgba(0, 0, 0, 0.5);
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Fix navbar text in light mode */
+        [data-bs-theme="light"] .navbar {
+            background-color: var(--bg-primary) !important;
+        }
+
+        [data-bs-theme="light"] .navbar-nav .nav-link {
+            color: var(--text-primary) !important;
+        }
+
+        [data-bs-theme="light"] .navbar-brand {
+            color: var(--text-primary) !important;
+        }
+
+        /* Fix button text colors */
+        [data-bs-theme="light"] .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        [data-bs-theme="light"] .btn-outline-light {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        /* Fix card text colors */
+        [data-bs-theme="light"] .card {
+            color: var(--text-primary);
+        }
+
+        [data-bs-theme="light"] .card .text-muted {
+            color: var(--text-secondary) !important;
+        }
+
+        /* Fix delivery info text */
+        [data-bs-theme="light"] .delivery-info {
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Fix testimonial card text */
+        [data-bs-theme="light"] .testimonial-card {
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+        }
+
+        /* Fix footer text colors */
+        [data-bs-theme="light"] footer {
+            color: var(--text-primary);
+        }
+
+        [data-bs-theme="light"] footer .text-muted {
+            color: var(--text-secondary) !important;
+        }
+
+        /* Fix form control text */
+        [data-bs-theme="light"] .form-control {
+            color: var(--text-primary);
+            background-color: var(--input-bg);
+        }
+
+        [data-bs-theme="light"] .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Fix dropdown text */
+        [data-bs-theme="light"] .dropdown-menu {
+            background-color: var(--bg-primary);
+        }
+
+        [data-bs-theme="light"] .dropdown-item {
+            color: var(--text-primary);
+        }
+
+        /* Fix modal text */
+        [data-bs-theme="light"] .modal-content {
+            color: var(--text-primary);
+        }
+
+        /* Fix navbar toggler */
+        [data-bs-theme="light"] .navbar-toggler {
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        [data-bs-theme="light"] .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Fix hero section text for light mode */
+        [data-bs-theme="light"] .hero-section:not(.video-overlay) {
+            color: #ffffff;
+        }
+
+        /* Fix badge colors */
+        [data-bs-theme="light"] .badge.bg-primary {
+            color: #ffffff;
+        }
+
+        /* Fix table text */
+        [data-bs-theme="light"] .table {
+            color: var(--text-primary);
+        }
+
+        /* Remove bg-dark class when in light mode */
+        body.bg-dark[data-bs-theme="light"] {
+            background-color: var(--bg-primary) !important;
+        }
+
+        /* Update the theme toggle button */
+        [data-bs-theme="light"] #themeToggle {
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        /* Fix light mode text visibility */
+        [data-bs-theme="light"] {
+            /* Override Bootstrap dark theme classes */
+            .bg-dark {
+                background-color: var(--bg-primary) !important;
+            }
+            
+            .navbar-dark .navbar-nav .nav-link {
+                color: var(--text-primary);
+            }
+            
+            .text-white {
+                color: var(--text-primary) !important;
+            }
+            
+            /* Fix hero section text */
+            .hero-section {
+                .text-white {
+                    color: #ffffff !important;
+                }
+            }
+            
+            /* Fix navigation */
+            .navbar {
+                .navbar-brand {
+                    color: var(--text-primary);
+                }
+                
+                .navbar-nav .nav-link {
+                    color: var(--text-primary);
+                }
+                
+                .navbar-toggler {
+                    border-color: var(--border-color);
+                }
+            }
+            
+            /* Fix buttons */
+            .btn-outline-primary {
+                color: var(--primary-color);
+                border-color: var(--primary-color);
+                
+                &:hover {
+                    color: #ffffff;
+                    background-color: var(--primary-color);
+                }
+            }
+            
+            /* Fix cards */
+            .card {
+                background-color: var(--card-bg);
+                
+                .card-title {
+                    color: var(--text-primary);
+                }
+                
+                .card-text {
+                    color: var(--text-secondary);
+                }
+            }
+            
+            /* Fix delivery info section */
+            .delivery-info {
+                background-color: var(--bg-secondary);
+                color: var(--text-primary);
+                
+                i {
+                    color: var(--primary-color);
+                }
+            }
+            
+            /* Fix footer */
+            footer {
+                background-color: var(--bg-secondary) !important;
+                
+                h5, h6 {
+                    color: var(--text-primary);
+                }
+                
+                .text-muted {
+                    color: var(--text-secondary) !important;
+                }
+                
+                a {
+                    color: var(--text-secondary);
+                    
+                    &:hover {
+                        color: var(--primary-color);
+                    }
+                }
+            }
+        }
+
+        /* Fix theme toggle button */
+        #themeToggle {
+            background: transparent;
+            
+            [data-bs-theme="light"] & {
+                color: var(--text-primary);
+                
+                &:hover {
+                    background-color: var(--hover-bg);
+                }
+            }
+        }
+
+        /* Fix search and sort controls */
+        [data-bs-theme="light"] {
+            .form-control, .form-select {
+                background-color: var(--input-bg);
+                color: var(--text-primary);
+                border-color: var(--input-border);
+                
+                &:focus {
+                    border-color: var(--primary-color);
+                    box-shadow: 0 0 0 0.2rem rgba(255, 75, 43, 0.25);
+                }
+            }
+        }
+
+        /* Ensure proper contrast for badges */
+        [data-bs-theme="light"] {
+            .badge {
+                &.bg-primary {
+                    background-color: var(--primary-color) !important;
+                    color: #ffffff;
+                }
+                
+                &.bg-success {
+                    color: #ffffff;
+                }
+                
+                &.bg-danger {
+                    color: #ffffff;
+                }
+            }
+        }
+
+        /* Fix font visibility in light mode */
+        [data-bs-theme="light"] {
+            /* Fix general text colors */
+            .text-white {
+                color: var(--text-primary) !important;
+            }
+
+            /* Keep hero section text white */
+            .hero-section {
+                .text-white,
+                h1, 
+                .lead,
+                .btn-outline-light {
+                    color: #ffffff !important;
+                }
+            }
+
+            /* Fix navbar text */
+            .navbar {
+                .navbar-brand,
+                .nav-link {
+                    color: var(--text-primary) !important;
+                }
+                
+                .navbar-brand i {
+                    color: var(--primary-color) !important;
+                }
+            }
+
+            /* Fix card text */
+            .card {
+                .card-title {
+                    color: var(--text-primary) !important;
+                }
+                
+                .card-text,
+                .text-muted {
+                    color: var(--text-secondary) !important;
+                }
+                
+                .price {
+                    color: var(--text-primary) !important;
+                }
+            }
+
+            /* Fix section headings */
+            h1, h2, h3, h4, h5, h6 {
+                color: var(--text-primary) !important;
+            }
+
+            /* Fix delivery info text */
+            .delivery-info {
+                h5 {
+                    color: var(--text-primary) !important;
+                }
+                
+                p {
+                    color: var(--text-secondary) !important;
+                }
+                
+                i {
+                    color: var(--primary-color) !important;
+                }
+            }
+
+            /* Fix footer text */
+            footer {
+                h5, h6 {
+                    color: var(--text-primary) !important;
+                }
+                
+                p {
+                    color: var(--text-secondary) !important;
+                }
+                
+                .text-muted {
+                    color: var(--text-secondary) !important;
+                }
+                
+                a.text-muted {
+                    &:hover {
+                        color: var(--primary-color) !important;
+                    }
+                }
+            }
+
+            /* Fix modal text */
+            .modal {
+                .modal-title {
+                    color: var(--text-primary) !important;
+                }
+                
+                .modal-body {
+                    color: var(--text-primary);
+                }
+            }
+
+            /* Fix form labels */
+            label.form-label {
+                color: var(--text-primary) !important;
+            }
+
+            /* Fix badge text */
+            .badge {
+                &.bg-primary,
+                &.bg-success,
+                &.bg-danger {
+                    color: #ffffff !important;
+                }
+            }
+
+            /* Fix rating stars */
+            .rating {
+                color: #FFD700 !important;
+            }
+        }
+
+        /* Fix specific text elements that should remain white in both themes */
+        .hero-section .video-overlay,
+        .btn-custom-primary,
+        .nav-pills .nav-link.active {
+            color: #ffffff !important;
+        }
+
+        /* Add these footer-specific styles to your existing CSS */
+        footer {
+            background-color: var(--bg-secondary);
+        }
+
+        footer .hover-text-primary {
+            transition: color 0.3s ease;
+        }
+
+        footer .hover-text-primary:hover {
+            color: var(--primary-color) !important;
+        }
+
+        footer .btn-outline-light {
+            transition: all 0.3s ease;
+        }
+
+        footer .btn-outline-light:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        footer .social-links a {
+            transition: transform 0.3s ease;
+        }
+
+        footer .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        footer img {
+            transition: opacity 0.3s ease;
+        }
+
+        footer img:hover {
+            opacity: 0.8;
+        }
+
+        /* Improve footer responsiveness */
+        @media (max-width: 768px) {
+            footer .btn-outline-light {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            footer .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="#hero">
+                <i class="fas fa-utensils me-2 text-primary"></i>FoodHub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#special-offers">Special Offers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-primary me-2" 
+                            id="themeToggle" 
+                            title="Switch theme"
+                            aria-label="Toggle theme">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button class="btn btn-outline-primary position-relative me-2" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge" id="cartCount">
+                            0
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-white" id="hero">
+        <div class="hero-video-container">
+            <video 
+                class="hero-video" 
+                muted
+                playsinline
+                preload="auto"
+                id="heroVideo"
+                autoplay
+                loop
+                poster="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200">
+                <source src="hero-video.mp4" type="video/mp4">
+                <source src="hero-video.webm" type="video/webm">
+                <!-- Fallback message -->
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay" id="videoOverlay"></div>
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content" id="heroContent">
+                    <h1 class="display-4 fw-bold mb-4 hero-title">Gourmet Food Delivered</h1>
+                    <p class="lead mb-4 hero-text">Experience restaurant-quality meals from top-rated chefs, delivered right to your doorstep.</p>
+                    <div class="d-flex gap-3 hero-buttons">
+                        <button class="btn btn-custom-primary btn-lg">
+                            <i class="fas fa-utensils me-2"></i>Explore Menu
+                        </button>
+                        <button class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-play me-2"></i>How It Works
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Delivery Info -->
+    <div class="container">
+        <div class="row delivery-info">
+            <div class="col-md-3 text-center py-3">
+                <i class="fas fa-clock mb-2 text-primary"></i>
+                <h5>Fast Delivery</h5>
+                <p class="mb-0">30 min or free</p>
+            </div>
+            <div class="col-md-3 text-center py-3">
+                <i class="fas fa-medal mb-2 text-primary"></i>
+                <h5>Top Rated</h5>
+                <p class="mb-0">4.8/5 average</p>
+            </div>
+            <div class="col-md-3 text-center py-3">
+                <i class="fas fa-truck mb-2 text-primary"></i>
+                <h5>Free Delivery</h5>
+                <p class="mb-0">Orders over ₹499</p>
+            </div>
+            <div class="col-md-3 text-center py-3">
+                <i class="fas fa-shield-alt mb-2 text-primary"></i>
+                <h5>Secure Payment</h5>
+                <p class="mb-0">100% secure</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <section id="categories" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Food Categories</h2>
+            <ul class="nav nav-pills mb-4 justify-content-center" id="menuTabs">
+                <li class="nav-item">
+                    <button class="nav-link active" data-category="all">All</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-category="pizza">Pizza</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-category="burger">Burgers</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-category="asian">Asian</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-category="healthy">Healthy</button>
+                </li>
+            </ul>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search menu items...">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select" id="sortSelect">
+                        <option value="default">Sort by...</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row g-4" id="menuItems">
+                <!-- Menu items will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offers Section -->
+    <section id="special-offers" class="py-5">
+        <!-- Add special offers content here -->
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <!-- Add about content here -->
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <!-- Add contact content here -->
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Your Cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cartItems" class="mb-4">
+                        <!-- Cart items will be displayed here -->
+                    </div>
+                    <div class="card bg-dark">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span>₹<span id="subtotal">0.00</span></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Delivery Fee:</span>
+                                <span>₹<span id="deliveryFee">0.00</span></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax:</span>
+                                <span>₹<span id="tax">0.00</span></span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <h5>Total:</h5>
+                                <h5>₹<span id="cartTotal">0.00</span></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                    <button type="button" class="btn btn-custom-primary" id="checkoutBtn">
+                        <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this after the cart modal -->
+    <div class="modal fade" id="confirmOrderModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="orderForm">
+                        <div class="mb-3">
+                            <label class="form-label">Delivery Address</label>
+                            <textarea class="form-control" id="deliveryAddress" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Delivery Instructions (Optional)</label>
+                            <input type="text" class="form-control" id="deliveryInstructions">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-custom-primary" id="proceedToPayment">
+                        <i class="fas fa-lock me-2"></i>Proceed to Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this after the confirm order modal -->
+    <div class="modal fade" id="paymentOptionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Choose Payment Method</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <h6>Order Total: ₹<span id="paymentAmount">0.00</span></h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- UPI QR Code Option -->
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title mb-3">Pay via UPI QR</h6>
+                                    <img id="qrCodeImage" src="" alt="UPI QR Code" class="img-fluid mb-3" style="max-width: 200px;">
+                                    <div class="small text-muted mb-3">Scan with any UPI app</div>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/200px-UPI-Logo-vector.svg.png" alt="UPI" height="20">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/200px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm" height="20">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/200px-Google_Pay_Logo.svg.png" alt="Google Pay" height="20">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-outline-primary w-100" onclick="verifyUpiPayment()">
+                                        I've completed the payment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Razorpay Option -->
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title mb-3">Pay via Card/Net Banking</h6>
+                                    <img src="https://razorpay.com/assets/razorpay-logo.svg" alt="Razorpay" class="img-fluid mb-3" style="max-width: 200px;">
+                                    <div class="small text-muted mb-3">Secure payment via Razorpay</div>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/349/349221.png" alt="Visa" height="20">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/349/349228.png" alt="Mastercard" height="20">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/349/349230.png" alt="Maestro" height="20">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-custom-primary w-100" onclick="initializeRazorpay()">
+                                        Pay with Razorpay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this modal for UPI payment verification -->
+    <div class="modal fade" id="upiVerificationModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Verify Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <p>Please enter the UPI reference ID to verify your payment:</p>
+                        <input type="text" class="form-control mb-3" id="upiReferenceId" placeholder="UPI Reference ID">
+                        <button class="btn btn-custom-primary" onclick="confirmUpiPayment()">
+                            Verify Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this modal after your other modals -->
+    <div class="modal fade" id="productDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="productImage" src="" alt="" class="img-fluid rounded mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="rating" id="productRating"></span>
+                                    <small class="text-muted" id="productReviews"></small>
+                                </div>
+                                <span class="badge bg-success" id="productPrepTime"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 id="productName" class="mb-3"></h4>
+                            <p id="productDescription" class="text-muted mb-3"></p>
+                            <div class="mb-3">
+                                <h5 class="mb-2">Badges:</h5>
+                                <div id="productBadges"></div>
+                            </div>
+                            <div class="mb-3">
+                                <h5 class="mb-2">Category:</h5>
+                                <span class="badge bg-primary" id="productCategory"></span>
+                            </div>
+                            <div class="mb-4">
+                                <h5 class="mb-2">Price:</h5>
+                                <h4 class="text-primary">₹<span id="productPrice"></span></h4>
+                            </div>
+                            <button class="btn btn-custom-primary w-100" id="modalAddToCart">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Nutritional Information -->
+                    <div class="mt-4">
+                        <h5 class="mb-3">Nutritional Information</h5>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-fire mb-2 text-primary"></i>
+                                        <h6>Calories</h6>
+                                        <p class="mb-0" id="productCalories">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-drumstick-bite mb-2 text-primary"></i>
+                                        <h6>Protein</h6>
+                                        <p class="mb-0" id="productProtein">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-bread-slice mb-2 text-primary"></i>
+                                        <h6>Carbs</h6>
+                                        <p class="mb-0" id="productCarbs">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-cheese mb-2 text-primary"></i>
+                                        <h6>Fat</h6>
+                                        <p class="mb-0" id="productFat">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // Add this constant at the top of your script section
+        const USD_TO_INR_RATE = 83;
+
+        // Sample menu data with categories
+        const menuData = [
+            {
+                id: 1,
+                name: 'Margherita Pizza',
+                price: 299, // Standard pizza chain price
+                image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=800&h=600',
+                description: 'Fresh mozzarella, tomatoes, basil, olive oil',
+                category: 'pizza',
+                rating: 4.8,
+                reviews: 234,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 2,
+                name: 'Classic Cheeseburger',
+                price: 199, // Comparable to premium burger chains
+                image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=600',
+                description: 'Angus beef, cheddar, lettuce, tomato, special sauce',
+                category: 'burger',
+                rating: 4.6,
+                reviews: 186,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 3,
+                name: 'Pad Thai',
+                price: 249, // Premium Asian restaurant price
+                image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800&h=600',
+                description: 'Rice noodles, shrimp, tofu, peanuts, tamarind sauce',
+                category: 'asian',
+                rating: 4.7,
+                reviews: 312,
+                prepTime: '20-25 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 4,
+                name: 'Buddha Bowl',
+                price: 279, // Premium health food price
+                image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&h=600',
+                description: 'Quinoa, roasted vegetables, avocado, tahini dressing',
+                category: 'healthy',
+                rating: 4.9,
+                reviews: 156,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 5,
+                name: 'Pepperoni Pizza',
+                price: 349, // Premium topping pizza price
+                image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800&h=600',
+                description: 'Italian pepperoni, mozzarella, tomato sauce',
+                category: 'pizza',
+                rating: 4.7,
+                reviews: 289,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 6,
+                name: 'Sushi Roll Platter',
+                price: 599, // Premium Japanese restaurant price
+                image: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&h=600',
+                description: 'California, spicy tuna, rainbow rolls (18 pcs)',
+                category: 'asian',
+                rating: 4.9,
+                reviews: 423,
+                prepTime: '25-30 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 7,
+                name: 'Chicken Biryani',
+                price: 299, // Standard restaurant biryani price
+                image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&h=600',
+                description: 'Fragrant basmati rice with tender chicken, aromatic spices',
+                category: 'asian',
+                rating: 4.9,
+                reviews: 542,
+                prepTime: '25-30 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 8,
+                name: 'Greek Salad',
+                price: 249, // Premium salad price
+                image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&h=600',
+                description: 'Fresh cucumbers, tomatoes, olives, feta cheese, olive oil',
+                category: 'healthy',
+                rating: 4.6,
+                reviews: 234,
+                prepTime: '10-15 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 9,
+                name: 'BBQ Chicken Pizza',
+                price: 399, // Premium pizza price
+                image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&h=600',
+                description: 'BBQ sauce, grilled chicken, red onions, cilantro',
+                category: 'pizza',
+                rating: 4.7,
+                reviews: 345,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 10,
+                name: 'Veggie Supreme Burger',
+                price: 179, // Premium veg burger price
+                image: 'https://images.unsplash.com/photo-1520072959219-c595dc870360?w=800&h=600',
+                description: 'Plant-based patty, avocado, sprouts, special sauce',
+                category: 'burger',
+                rating: 4.5,
+                reviews: 189,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 11,
+                name: 'Spicy Ramen',
+                price: 299, // Premium ramen price
+                image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&h=600',
+                description: 'Rich broth, noodles, chashu pork, soft-boiled egg',
+                category: 'asian',
+                rating: 4.8,
+                reviews: 423,
+                prepTime: '15-20 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 12,
+                name: 'Mediterranean Bowl',
+                price: 299, // Premium bowl price
+                image: 'https://images.unsplash.com/photo-1529059997568-3d84772454f0?w=800&h=600',
+                description: 'Falafel, hummus, tabbouleh, pita bread',
+                category: 'healthy',
+                rating: 4.7,
+                reviews: 267,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 13,
+                name: 'Four Cheese Pizza',
+                price: 449, // Premium specialty pizza price
+                image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&h=600',
+                description: 'Mozzarella, gorgonzola, parmesan, ricotta',
+                category: 'pizza',
+                rating: 4.6,
+                reviews: 298,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 14,
+                name: 'Bacon Deluxe Burger',
+                price: 249, // Premium burger price
+                image: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=800&h=600',
+                description: 'Angus beef, crispy bacon, cheddar, caramelized onions',
+                category: 'burger',
+                rating: 4.8,
+                reviews: 376,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 15,
+                name: 'Green Curry',
+                price: 279, // Thai curry price
+                image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&h=600',
+                description: 'Thai green curry with vegetables and coconut milk',
+                category: 'asian',
+                rating: 4.7,
+                reviews: 289,
+                prepTime: '20-25 min',
+                spicy: true,
+                vegetarian: true
+            },
+            {
+                id: 16,
+                name: 'Poke Bowl',
+                price: 399, // Premium poke bowl price
+                image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600',
+                description: 'Fresh tuna, rice, avocado, edamame, sesame sauce',
+                category: 'healthy',
+                rating: 4.9,
+                reviews: 412,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 17,
+                name: 'Buffalo Chicken Pizza',
+                price: 399, // Premium pizza price
+                image: 'https://images.unsplash.com/photo-1600028068383-ea11a7a101f3?w=800&h=600',
+                description: 'Spicy buffalo chicken, blue cheese, ranch drizzle',
+                category: 'pizza',
+                rating: 4.6,
+                reviews: 245,
+                prepTime: '20-25 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 18,
+                name: 'Mushroom Swiss Burger',
+                price: 229, // Premium burger price
+                image: 'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=800&h=600',
+                description: 'Beef patty, sautéed mushrooms, Swiss cheese',
+                category: 'burger',
+                rating: 4.7,
+                reviews: 198,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 19,
+                name: 'Dim Sum Platter',
+                price: 499, // Premium dim sum price
+                image: 'https://images.unsplash.com/photo-1576644461179-ac5b28293cdc?w=800&h=600',
+                description: 'Assorted dumplings, buns, and spring rolls',
+                category: 'asian',
+                rating: 4.8,
+                reviews: 367,
+                prepTime: '25-30 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 20,
+                name: 'Quinoa Power Bowl',
+                price: 299, // Health bowl price
+                image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=600',
+                description: 'Quinoa, kale, sweet potato, chickpeas, tahini',
+                category: 'healthy',
+                rating: 4.7,
+                reviews: 276,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 21,
+                name: 'Seafood Pizza',
+                price: 499, // Premium seafood pizza price
+                image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=600',
+                description: 'Shrimp, calamari, mussels, garlic white sauce',
+                category: 'pizza',
+                rating: 4.8,
+                reviews: 312,
+                prepTime: '25-30 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 22,
+                name: 'Double Cheese Burger',
+                price: 249, // Premium burger price
+                image: 'https://images.unsplash.com/photo-1550317138-10000687a72b?w=800&h=600',
+                description: 'Double beef patty, double cheese, special sauce',
+                category: 'burger',
+                rating: 4.6,
+                reviews: 289,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 23,
+                name: 'Tom Yum Soup',
+                price: 249, // Thai soup price
+                image: 'https://images.unsplash.com/photo-1548943487-a2e4e43b4853?w=800&h=600',
+                description: 'Spicy and sour Thai soup with shrimp and mushrooms',
+                category: 'asian',
+                rating: 4.7,
+                reviews: 345,
+                prepTime: '15-20 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 24,
+                name: 'Acai Bowl',
+                price: 329, // Premium health bowl price
+                image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&h=600',
+                description: 'Acai blend, granola, fresh fruits, honey',
+                category: 'healthy',
+                rating: 4.8,
+                reviews: 234,
+                prepTime: '10-15 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 25,
+                name: 'Truffle Mushroom Pizza',
+                price: 549, // Premium specialty pizza price
+                image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=800&h=600',
+                description: 'Wild mushrooms, truffle oil, fresh mozzarella',
+                category: 'pizza',
+                rating: 4.9,
+                reviews: 278,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 26,
+                name: 'Impossible Burger',
+                price: 399, // Premium plant-based burger price
+                image: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=800&h=600',
+                description: 'Plant-based impossible patty, vegan cheese, lettuce',
+                category: 'burger',
+                rating: 4.7,
+                reviews: 198,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 27,
+                name: 'Mediterranean Salad Bowl',
+                price: 299,
+                image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600',
+                description: 'Fresh greens, feta, olives, chickpeas, quinoa, lemon dressing',
+                category: 'healthy',
+                rating: 4.8,
+                reviews: 167,
+                prepTime: '10-15 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 28,
+                name: 'Protein Power Bowl',
+                price: 349,
+                image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=600',
+                description: 'Grilled chicken, sweet potato, broccoli, almonds, tahini',
+                category: 'healthy',
+                rating: 4.9,
+                reviews: 203,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 29,
+                name: 'Superfood Smoothie Bowl',
+                price: 279,
+                image: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&h=600',
+                description: 'Acai, banana, berries, chia seeds, coconut, granola',
+                category: 'healthy',
+                rating: 4.7,
+                reviews: 156,
+                prepTime: '10-15 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 30,
+                name: 'Keto Power Plate',
+                price: 399,
+                image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600',
+                description: 'Grilled salmon, avocado, asparagus, cauliflower rice',
+                category: 'healthy',
+                rating: 4.8,
+                reviews: 189,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 31,
+                name: 'Vegan Energy Bowl',
+                price: 329,
+                image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600',
+                description: 'Tempeh, brown rice, kale, roasted vegetables, miso dressing',
+                category: 'healthy',
+                rating: 4.6,
+                reviews: 145,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 32,
+                name: 'Green Goddess Bowl',
+                price: 289,
+                image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=600',
+                description: 'Spinach, avocado, edamame, cucumber, green goddess dressing',
+                category: 'healthy',
+                rating: 4.7,
+                reviews: 178,
+                prepTime: '10-15 min',
+                spicy: false,
+                vegetarian: true
+            }
+        ];
+
+        // Add these new items to the menuData array
+        const newMenuItems = [
+            {
+                id: 33,
+                name: 'Butter Chicken',
+                price: 349,
+                image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&h=600',
+                description: 'Creamy tomato curry with tender chicken pieces and butter',
+                category: 'asian',
+                rating: 4.9,
+                reviews: 456,
+                prepTime: '25-30 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 34,
+                name: 'Paneer Tikka',
+                price: 299,
+                image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=800&h=600',
+                description: 'Grilled cottage cheese with spices and vegetables',
+                category: 'asian',
+                rating: 4.7,
+                reviews: 328,
+                prepTime: '20-25 min',
+                spicy: true,
+                vegetarian: true
+            },
+            {
+                id: 35,
+                name: 'Vegan Supreme Pizza',
+                price: 399,
+                image: 'https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=800&h=600',
+                description: 'Plant-based cheese, mushrooms, bell peppers, olives',
+                category: 'pizza',
+                rating: 4.6,
+                reviews: 245,
+                prepTime: '20-25 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 36,
+                name: 'BBQ Bacon Burger',
+                price: 279,
+                image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=800&h=600',
+                description: 'Angus beef, crispy bacon, BBQ sauce, onion rings',
+                category: 'burger',
+                rating: 4.8,
+                reviews: 387,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            },
+            {
+                id: 37,
+                name: 'Sushi Platter Deluxe',
+                price: 799,
+                image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&h=600',
+                description: 'Premium selection of nigiri, maki, and sashimi (24 pcs)',
+                category: 'asian',
+                rating: 4.9,
+                reviews: 523,
+                prepTime: '25-30 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 38,
+                name: 'Mediterranean Bowl',
+                price: 329,
+                image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600',
+                description: 'Quinoa, hummus, falafel, olives, tzatziki',
+                category: 'healthy',
+                rating: 4.7,
+                reviews: 289,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: true
+            },
+            {
+                id: 39,
+                name: 'Spicy Ramen Bowl',
+                price: 299,
+                image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&h=600',
+                description: 'Rich spicy broth, noodles, pork belly, soft egg',
+                category: 'asian',
+                rating: 4.8,
+                reviews: 412,
+                prepTime: '20-25 min',
+                spicy: true,
+                vegetarian: false
+            },
+            {
+                id: 40,
+                name: 'Keto Bowl',
+                price: 349,
+                image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600',
+                description: 'Grilled chicken, avocado, eggs, spinach, feta',
+                category: 'healthy',
+                rating: 4.6,
+                reviews: 234,
+                prepTime: '15-20 min',
+                spicy: false,
+                vegetarian: false
+            }
+        ];
+
+        // Add this line after the existing menuData array
+        menuData.push(...newMenuItems);
+
+        let cart = [];
+        let currentCategory = 'all';
+
+        // Replace the existing theme toggle functionality with this enhanced version
+        function initializeTheme() {
+            // Check for saved theme preference or system preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const defaultTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            applyTheme(defaultTheme);
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = theme === 'light' ? 'moon' : 'sun';
+            
+            // Animate icon change
+            gsap.to(themeToggle.querySelector('i'), {
+                rotation: 360,
+                duration: 0.5,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    themeToggle.innerHTML = `<i class="fas fa-${icon}"></i>`;
+                }
+            });
+        }
+
+        // Update the theme toggle click handler
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+        });
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initializeTheme);
+
+        // Category filter functionality
+        document.querySelectorAll('#menuTabs .nav-link').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelector('#menuTabs .nav-link.active').classList.remove('active');
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-category');
+                renderMenu();
+            });
+        });
+
+        // Add these event listeners after the category filter functionality
+        document.getElementById('searchInput').addEventListener('input', renderMenu);
+        document.getElementById('sortSelect').addEventListener('change', renderMenu);
+
+        // Update the renderMenu function
+        function renderMenu() {
+            const menuContainer = document.getElementById('menuItems');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sortOption = document.getElementById('sortSelect').value;
+            
+            // Filter by category and search term
+            let filteredMenu = menuData.filter(item => {
+                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                                    item.description.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+
+            // Sort the filtered menu
+            switch(sortOption) {
+                case 'price-asc':
+                    filteredMenu.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filteredMenu.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filteredMenu.sort((a, b) => b.rating - a.rating);
+                    break;
+                default:
+                    // Keep original order
+                    break;
+            }
+
+            // Render the filtered and sorted menu
+            menuContainer.innerHTML = filteredMenu.map(item => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="category-badge">
+                            <span class="badge bg-primary">${item.category}</span>
+                        </div>
+                        <img src="${item.image}" class="card-img-top" alt="${item.name}" 
+                            style="cursor: pointer" onclick="showProductDetails(${item.id})">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0" style="cursor: pointer" 
+                                    onclick="showProductDetails(${item.id})">${item.name}</h5>
+                                <span class="badge bg-success">${item.prepTime}</span>
+                            </div>
+                            <p class="card-text text-muted">${item.description}</p>
+                            <div class="mb-2">
+                                <span class="rating">
+                                    ${'★'.repeat(Math.floor(item.rating))}${'☆'.repeat(5-Math.floor(item.rating))}
+                                </span>
+                                <small class="text-muted">(${item.reviews} reviews)</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">₹${item.price.toFixed(0)}</h5>
+                                <button class="btn btn-custom-primary" onclick="addToCart(${item.id})">
+                                    <i class="fas fa-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                ${item.vegetarian ? '<span class="badge bg-success me-2"><i class="fas fa-leaf me-1"></i>Vegetarian</span>' : ''}
+                                ${item.spicy ? '<span class="badge bg-danger"><i class="fas fa-pepper-hot me-1"></i>Spicy</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Show message if no results found
+            if (filteredMenu.length === 0) {
+                menuContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No items found</h4>
+                        <p class="text-muted">Try adjusting your search or filters</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Add item to cart
+        function addToCart(itemId) {
+            const item = menuData.find(i => i.id === itemId);
+            const existingItem = cart.find(i => i.id === itemId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+
+            showToast(`${item.name} added to cart!`);
+            updateCartUI();
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toastContainer = document.createElement('div');
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.bottom = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '1000';
+            
+            toastContainer.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong class="me-auto">Success</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(toastContainer);
+            setTimeout(() => {
+                toastContainer.remove();
+            }, 3000);
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const subtotalElem = document.getElementById('subtotal');
+            const deliveryFeeElem = document.getElementById('deliveryFee');
+            const taxElem = document.getElementById('tax');
+            const totalElem = document.getElementById('cartTotal');
+
+            // Update cart count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+
+            // Update cart items
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                        <p class="text-muted">Your cart is empty</p>
+                        <button class="btn btn-custom-primary" data-bs-dismiss="modal">
+                            Start Shopping
+                        </button>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img src="${item.image}" class="img-fluid rounded" alt="${item.name}">
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="mb-0">${item.name}</h6>
+                                    <small class="text-muted">${item.description}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                            onclick="updateQuantity(${item.id}, ${item.quantity - 1})">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <span class="mx-3">${item.quantity}</span>
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                            onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <span class="h6">₹${(item.price * item.quantity).toFixed(0)}</span>
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <button class="btn btn-sm btn-link text-danger" 
+                                        onclick="updateQuantity(${item.id}, 0)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = subtotal > 500 ? 0 : 49; // Free delivery above ₹500, else ₹49
+            const tax = subtotal * 0.05; // 5% GST
+            const total = subtotal + deliveryFee + tax;
+
+            // Update total elements
+            subtotalElem.textContent = subtotal.toFixed(0);
+            deliveryFeeElem.textContent = deliveryFee.toFixed(0);
+            taxElem.textContent = tax.toFixed(0);
+            totalElem.textContent = total.toFixed(0);
+        }
+
+        // Update item quantity
+        function updateQuantity(itemId, newQuantity) {
+            if (newQuantity < 1) {
+                cart = cart.filter(item => item.id !== itemId);
+            } else {
+                const item = cart.find(item => item.id === itemId);
+                if (item) {
+                    item.quantity = newQuantity;
+                }
+            }
+            updateCartUI();
+        }
+
+        // Checkout handler
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+            if (cart.length === 0) {
+                showToast('Please add items to your cart first!');
+                return;
+            }
+
+            const total = parseFloat(document.getElementById('cartTotal').textContent);
+            
+            // Show order confirmation modal
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmOrderModal'));
+            confirmModal.show();
+        });
+
+        // Initialize
+        renderMenu();
+        updateCartUI();
+
+        // Add these payment-related functions in your script section
+        function initializeRazorpay() {
+            const total = parseFloat(document.getElementById('paymentAmount').textContent);
+            const options = {
+                // ... existing Razorpay options ...
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        function verifyUpiPayment() {
+            // Close payment options modal
+            bootstrap.Modal.getInstance(document.getElementById('paymentOptionsModal')).hide();
+            
+            // Show UPI verification modal
+            const upiVerificationModal = new bootstrap.Modal(document.getElementById('upiVerificationModal'));
+            upiVerificationModal.show();
+        }
+
+        function confirmUpiPayment() {
+            const referenceId = document.getElementById('upiReferenceId').value;
+            
+            if (!referenceId) {
+                showToast('Please enter the UPI reference ID');
+                return;
+            }
+
+            // Here you would typically verify the payment with your backend
+            // For demo purposes, we'll just simulate a successful payment
+            
+            const response = {
+                razorpay_payment_id: referenceId, // Using UPI reference ID as payment ID
+                payment_method: 'UPI'
+            };
+
+            handlePaymentSuccess(response);
+            bootstrap.Modal.getInstance(document.getElementById('upiVerificationModal')).hide();
+        }
+
+        // Add these functions to your existing JavaScript code
+        function generateQRCode(amount, upiId) {
+            // UPI Payment URL format
+            const upiUrl = `upi://pay?pa=${upiId}&pn=FoodHub&am=${amount}&cu=INR&tn=Food Order Payment`;
+            
+            // Create QR code using a data URL (for demo)
+            return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+        }
+
+        // Update the payment initialization function
+        function showPaymentOptions(amount) {
+            const paymentModal = new bootstrap.Modal(document.getElementById('paymentOptionsModal'));
+            document.getElementById('qrCodeImage').src = generateQRCode(amount, 'your-upi-id@bank'); // Replace with your UPI ID
+            document.getElementById('paymentAmount').textContent = amount.toFixed(2);
+            paymentModal.show();
+        }
+
+        // Update the proceed to payment handler
+        document.getElementById('proceedToPayment').addEventListener('click', () => {
+            const form = document.getElementById('orderForm');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Get order details
+            const orderDetails = {
+                address: document.getElementById('deliveryAddress').value,
+                phone: document.getElementById('phoneNumber').value,
+                email: document.getElementById('email').value,
+                instructions: document.getElementById('deliveryInstructions').value
+            };
+
+            // Store order details
+            localStorage.setItem('currentOrder', JSON.stringify(orderDetails));
+
+            // Close the confirmation modal
+            bootstrap.Modal.getInstance(document.getElementById('confirmOrderModal')).hide();
+
+            // Get the total amount
+            const total = parseFloat(document.getElementById('cartTotal').textContent);
+            
+            // Show payment options
+            showPaymentOptions(total);
+        });
+
+        // Add nutritional information
+        menuData.forEach(item => {
+            // Add nutritional information
+            item.nutrition = {
+                calories: Math.floor(Math.random() * 400 + 200), // Random values for demo
+                protein: Math.floor(Math.random() * 20 + 10) + 'g',
+                carbs: Math.floor(Math.random() * 30 + 20) + 'g',
+                fat: Math.floor(Math.random() * 15 + 5) + 'g'
+            };
+        });
+
+        // Add this function to show product details
+        function showProductDetails(itemId) {
+            const item = menuData.find(i => i.id === itemId);
+            const modal = new bootstrap.Modal(document.getElementById('productDetailModal'));
+            
+            // Update modal content
+            document.getElementById('productImage').src = item.image;
+            document.getElementById('productImage').alt = item.name;
+            document.getElementById('productName').textContent = item.name;
+            document.getElementById('productDescription').textContent = item.description;
+            document.getElementById('productPrice').textContent = item.price.toFixed(0);
+            document.getElementById('productCategory').textContent = item.category;
+            document.getElementById('productPrepTime').textContent = item.prepTime;
+            
+            // Update rating and reviews
+            document.getElementById('productRating').innerHTML = '★'.repeat(Math.floor(item.rating)) + 
+                '☆'.repeat(5-Math.floor(item.rating));
+            document.getElementById('productReviews').textContent = `(${item.reviews} reviews)`;
+            
+            // Update badges
+            const badges = [];
+            if (item.vegetarian) {
+                badges.push('<span class="badge bg-success me-2"><i class="fas fa-leaf me-1"></i>Vegetarian</span>');
+            }
+            if (item.spicy) {
+                badges.push('<span class="badge bg-danger"><i class="fas fa-pepper-hot me-1"></i>Spicy</span>');
+            }
+            document.getElementById('productBadges').innerHTML = badges.join('');
+            
+            // Update nutritional information
+            document.getElementById('productCalories').textContent = item.nutrition.calories + ' kcal';
+            document.getElementById('productProtein').textContent = item.nutrition.protein;
+            document.getElementById('productCarbs').textContent = item.nutrition.carbs;
+            document.getElementById('productFat').textContent = item.nutrition.fat;
+            
+            // Add to cart button handler
+            document.getElementById('modalAddToCart').onclick = () => {
+                addToCart(item.id);
+                modal.hide();
+            };
+            
+            modal.show();
+        }
+
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Initial hero section animation
+        window.addEventListener('load', () => {
+            // Fade in hero section
+            gsap.to('.hero-section', {
+                opacity: 1,
+                duration: 1,
+                ease: 'power2.out'
+            });
+
+            // Scale video from larger to normal size
+            gsap.to('.hero-video', {
+                scale: 1,
+                duration: 2,
+                ease: 'power2.out'
+            });
+
+            // Animate hero content
+            const timeline = gsap.timeline({ delay: 0.5 });
+            
+            timeline.to('.hero-title', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            })
+            .to('.hero-text', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.7')
+            .to('.hero-buttons', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.7');
+
+            // Parallax effect on video
+            gsap.to('.hero-video', {
+                scrollTrigger: {
+                    trigger: '.hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: true
+                },
+                y: 200,
+                ease: 'none'
+            });
+
+            // Fade overlay on scroll
+            gsap.to('.video-overlay', {
+                scrollTrigger: {
+                    trigger: '.hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: true
+                },
+                backgroundColor: 'rgba(0,0,0,0.9)',
+                ease: 'none'
+            });
+
+            // Animate delivery info section
+            gsap.to('.delivery-info', {
+                scrollTrigger: {
+                    trigger: '.delivery-info',
+                    start: 'top bottom',
+                    end: 'top center',
+                    scrub: true
+                },
+                y: 0,
+                opacity: 1,
+                ease: 'power2.out'
+            });
+
+            // Animate menu items on scroll
+            gsap.utils.toArray('.card').forEach(card => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top bottom-=100',
+                        toggleActions: 'play none none reverse'
+                    },
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add smooth scroll to menu buttons
+        document.querySelector('.hero-buttons .btn-custom-primary').addEventListener('click', () => {
+            gsap.to(window, {
+                duration: 1,
+                scrollTo: '#categories',
+                ease: 'power2.inOut'
+            });
+        });
+
+        // Initialize video scroll animation
+        const video = document.getElementById('heroVideo');
+        let isVideoLoaded = false;
+
+        // Wait for video to load
+        video.addEventListener('loadedmetadata', () => {
+            isVideoLoaded = true;
+            // Force play on load
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    video.style.opacity = '1';
+                    console.log('Video loaded and playing');
+                }).catch(error => {
+                    console.error('Error playing video:', error);
+                });
+            }
+        });
+
+        // Add better error handling
+        video.addEventListener('error', (e) => {
+            console.error('Video Error:', e);
+            // Try alternative video source
+            const alternativeSource = 'https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-seen-from-the-heights-in-a-sunset-26070-large.mp4';
+            if (video.querySelector('source').src !== alternativeSource) {
+                console.log('Trying alternative video source...');
+                video.querySelector('source').src = alternativeSource;
+                video.load();
+            }
+        });
+
+        // Update ScrollTrigger configuration
+        ScrollTrigger.create({
+            trigger: '.hero-section',
+            start: 'top top',
+            end: '+=200%',
+            pin: true,
+            onUpdate: (self) => {
+                if (!isVideoLoaded) return;
+                
+                try {
+                    const videoTime = self.progress * video.duration;
+                    if (!isNaN(videoTime) && isFinite(videoTime)) {
+                        requestAnimationFrame(() => {
+                            video.currentTime = videoTime;
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error updating video time:', error);
+                }
+            },
+            scrub: 1,
+            markers: false
+        });
+
+        // Update parallax effect
+        gsap.to('.hero-video', {
+            scrollTrigger: {
+                trigger: '.hero-section',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 1
+            },
+            scale: 1.1,
+            y: '20%',
+            ease: 'none'
+        });
+
+        // Add reveal animations for content sections
+        const revealSections = gsap.utils.toArray('.section-reveal');
+        revealSections.forEach((section) => {
+            gsap.from(section, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    end: 'top 20%',
+                    scrub: 1,
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 0,
+                y: 100,
+                duration: 1.5
+            });
+        });
+
+        // Update the scroll behavior function
+        function smoothScroll(e) {
+                e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            const navHeight = document.querySelector('.navbar').offsetHeight;
+            
+            if (targetSection) {
+                const targetPosition = targetSection.offsetTop - navHeight;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                const navbarCollapse = document.querySelector('.navbar-collapse');
+                if (navbarCollapse.classList.contains('show')) {
+                    bootstrap.Collapse.getInstance(navbarCollapse).hide();
+                }
+            }
+        }
+
+        // Add click event listeners to all navbar links
+        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+            link.addEventListener('click', smoothScroll);
+        });
+
+        // Update the active nav item function
+        function updateActiveNavItem() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const scrollPosition = window.scrollY;
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSection = '#' + section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Add scroll event listener for active nav item
+        window.addEventListener('scroll', updateActiveNavItem);
+
+        // Initialize navbar state
+        updateActiveNavItem();
+
+        // Initialize animations and scroll effects
+        function initializeAnimations() {
+        // Add scroll progress indicator
+        gsap.to('.scroll-progress', {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: true
+            }
+        });
+
+        // Add floating animation to delivery info icons
+        gsap.utils.toArray('.delivery-info i').forEach((icon, i) => {
+            gsap.to(icon, {
+                y: -10,
+                duration: 1,
+                repeat: -1,
+                yoyo: true,
+                ease: 'power1.inOut',
+                delay: i * 0.2
+            });
+        });
+
+        // Add scroll-triggered counter animation
+            const counterElements = document.querySelectorAll('.counter-value');
+            counterElements.forEach(counter => {
+            const endValue = parseInt(counter.getAttribute('data-value'));
+            
+            gsap.to(counter, {
+                scrollTrigger: {
+                    trigger: counter,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                innerText: endValue,
+                duration: 2,
+                snap: { innerText: 1 },
+                ease: 'power1.inOut'
+            });
+        });
+
+        // Add a scroll-based color transition to the navbar
+        ScrollTrigger.create({
+            start: 'top -50',
+            end: 99999,
+            toggleClass: {
+                className: 'nav-scrolled',
+                targets: '.navbar'
+            }
+        });
+
+        // Add parallax effect to hero content
+        gsap.to('.hero-content', {
+            scrollTrigger: {
+                trigger: '.hero-section',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            },
+            y: 100,
+            opacity: 0.5,
+            ease: 'none'
+        });
+
+        // Add scroll-triggered stagger animation for menu items
+        gsap.utils.toArray('.menu-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top bottom-=100',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 0,
+                y: 50,
+                duration: 0.6,
+                delay: i * 0.1
+            });
+        });
+        }
+
+        // Call the initialization function when the document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            initializeAnimations();
+        updateNavbar();
+        });
+
+        // Add this after the existing ScrollTrigger initialization
+        // Update navbar background on scroll
+        function updateNavbar() {
+            const navbar = document.querySelector('.navbar');
+            const scrollPosition = window.scrollY;
+            
+            if (scrollPosition > 50) {
+                navbar.classList.add('navbar-scrolled');
+                navbar.style.backgroundColor = 'var(--bg-primary)';
+                navbar.style.backdropFilter = 'blur(10px)';
+                navbar.style.borderBottom = '1px solid var(--border-color)';
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+                navbar.style.backgroundColor = 'transparent';
+                navbar.style.backdropFilter = 'none';
+                navbar.style.borderBottom = 'none';
+            }
+        }
+
+        // Add scroll event listener
+        window.addEventListener('scroll', updateNavbar);
+
+        // Initialize navbar state
+        updateNavbar();
+    </script>
+
+    <!-- Footer -->
+    <footer class="bg-dark py-5 mt-5 border-top">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Company Info -->
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="mb-4">
+                        <i class="fas fa-utensils me-2 text-primary"></i>FoodHub
+                    </h5>
+                    <p class="text-muted">Experience the best food delivery service. Fresh, fast, and right to your doorstep.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-muted hover-text-primary">
+                            <i class="fab fa-facebook fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-muted hover-text-primary">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-muted hover-text-primary">
+                            <i class="fab fa-instagram fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-muted hover-text-primary">
+                            <i class="fab fa-linkedin fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="mb-4">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">About Us</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Menu</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Promotions</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Partners</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="mb-4">Support</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Help Center</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Privacy Policy</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Terms & Conditions</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-muted text-decoration-none">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="col-lg-4 col-md-4">
+                    <h6 class="mb-4">Newsletter</h6>
+                    <p class="text-muted">Subscribe to our newsletter for promotions and updates.</p>
+                    <form class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                            <button class="btn btn-custom-primary" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="mt-4">
+                        <h6 class="mb-3">Download Our App</h6>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-outline-light">
+                                <i class="fab fa-apple me-2"></i>App Store
+                            </a>
+                            <a href="#" class="btn btn-outline-light">
+                                <i class="fab fa-google-play me-2"></i>Play Store
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="row mt-5 pt-4 border-top">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-muted mb-0">
+                        © 2024 FoodHub. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex gap-3 justify-content-center justify-content-md-end">
+                        <img src="https://cdn-icons-png.flaticon.com/128/349/349221.png" alt="Visa" class="payment-icon" style="height: 25px; width: auto;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/349/349228.png" alt="Mastercard" class="payment-icon" style="height: 25px; width: auto;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/196/196566.png" alt="PayPal" class="payment-icon" style="height: 25px; width: auto;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/5968/5968144.png" alt="Apple Pay" class="payment-icon" style="height: 25px; width: auto;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add a scroll progress indicator -->
+    <div class="scroll-progress"></div>
+</body>
+</html>
